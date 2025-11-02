@@ -17,6 +17,9 @@ const api = axios.create({
 api.interceptors.request.use(
   (config) => {
     console.log(`Making ${config.method?.toUpperCase()} request to ${config.url}`);
+    if (config.params) {
+      console.log('Request params:', config.params);
+    }
     return config;
   },
   (error) => {
@@ -27,6 +30,10 @@ api.interceptors.request.use(
 // Response interceptor for error handling (optional)
 api.interceptors.response.use(
   (response) => {
+    // Log response data for debugging
+    if (response.config.url?.includes('/events')) {
+      console.log('Events response:', response.data);
+    }
     return response;
   },
   (error) => {

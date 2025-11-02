@@ -25,39 +25,43 @@ const EventDetailsPage = () => {
   const { toast } = useToast();
   const [event, setEvent] = useState<EventDetails | null>(null);
   const [loading, setLoading] = useState(true);
-  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  
+  // Initialize userCoords from localStorage synchronously to prevent race condition
+  const getInitialUserCoords = (): { latitude: number; longitude: number } | null => {
+    try {
+      const savedLocation = localStorage.getItem('userLocation');
+      if (savedLocation) {
+        const location = JSON.parse(savedLocation);
+        if (location.latitude && location.longitude) {
+          return location;
+        }
+      }
+    } catch (e) {
+      // Invalid saved location
+      localStorage.removeItem('userLocation');
+    }
+    return null;
+  };
+  
+  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(getInitialUserCoords);
 
   useEffect(() => {
-    // Try to load saved location from localStorage
-    const savedLocation = localStorage.getItem('userLocation');
-    if (savedLocation) {
-      try {
-        const location = JSON.parse(savedLocation);
-        setUserCoords(location);
-      } catch (e) {
-        // Invalid saved location
-        localStorage.removeItem('userLocation');
-      }
-    }
-
     // Try to get current location if not saved
-    if (!savedLocation) {
+    if (!userCoords) {
       getCurrentLocation()
         .then((coords) => {
-          setUserCoords({
+          const locationData = {
             latitude: coords.latitude,
             longitude: coords.longitude,
-          });
-          localStorage.setItem('userLocation', JSON.stringify({
-            latitude: coords.latitude,
-            longitude: coords.longitude,
-          }));
+          };
+          setUserCoords(locationData);
+          localStorage.setItem('userLocation', JSON.stringify(locationData));
         })
         .catch(() => {
           // User denied or error getting location - that's okay
         });
     }
-  }, []);
+  }, [userCoords]);
 
   useEffect(() => {
     const fetchEventDetails = async () => {

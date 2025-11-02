@@ -7,6 +7,7 @@ interface EventCardProps {
     _id: string;
     title: string;
     location?: string;
+    distance?: number | null;
   };
 }
 
@@ -22,11 +23,16 @@ const EventCard = ({ event }: EventCardProps) => {
         <CardTitle className="text-xl font-bold text-primary hover:text-accent transition-colors">
           {event.title}
         </CardTitle>
-        <CardDescription className="mt-2">
+        <CardDescription className="mt-2 space-y-1">
           {event.location && (
             <div className="flex items-center gap-2 text-sm">
               <MapPin className="h-4 w-4 text-primary" />
               <span>{event.location}</span>
+            </div>
+          )}
+          {event.distance !== null && event.distance !== undefined && (
+            <div className="text-xs text-muted-foreground mt-1">
+              {event.distance.toFixed(1)} km away
             </div>
           )}
         </CardDescription>

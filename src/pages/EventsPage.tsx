@@ -18,6 +18,8 @@ interface Event {
   maxParticipants?: number;
   currentParticipants?: number;
   distance?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
 }
 
 const EventsPage = () => {
@@ -25,7 +27,26 @@ const EventsPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const { toast } = useToast();
-  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(null);
+  
+  // Initialize userCoords from localStorage synchronously to prevent race condition
+  const getInitialUserCoords = (): { latitude: number; longitude: number } | null => {
+    try {
+      const savedLocation = localStorage.getItem('userLocation');
+      if (savedLocation) {
+        const location = JSON.parse(savedLocation);
+        if (location.latitude && location.longitude) {
+          console.log('Initialized userCoords from localStorage:', location);
+          return location;
+        }
+      }
+    } catch (e) {
+      // Invalid saved location
+      localStorage.removeItem('userLocation');
+    }
+    return null;
+  };
+  
+  const [userCoords, setUserCoords] = useState<{ latitude: number; longitude: number } | null>(getInitialUserCoords);
   const [locationError, setLocationError] = useState<string | null>(null);
   const [requestingLocation, setRequestingLocation] = useState(false);
 
@@ -36,21 +57,18 @@ const EventsPage = () => {
     setLocationError(null);
     try {
       const coords = await getCurrentLocation();
-      setUserCoords({
+      const locationData = {
         latitude: coords.latitude,
         longitude: coords.longitude,
-      });
+      };
+      setUserCoords(locationData);
       // Save to localStorage for future use
-      localStorage.setItem('userLocation', JSON.stringify({
-        latitude: coords.latitude,
-        longitude: coords.longitude,
-      }));
+      localStorage.setItem('userLocation', JSON.stringify(locationData));
       toast({
         title: "Location enabled",
         description: "Events are now sorted by distance from you.",
       });
-      // Refresh events with location
-      fetchEvents(searchQuery, coords.latitude, coords.longitude);
+      // Refresh events with location - userCoords will trigger useEffect
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to get location";
       setLocationError(errorMessage);
@@ -64,21 +82,7 @@ const EventsPage = () => {
     }
   };
 
-  useEffect(() => {
-    // Try to load saved location from localStorage
-    const savedLocation = localStorage.getItem('userLocation');
-    if (savedLocation) {
-      try {
-        const location = JSON.parse(savedLocation);
-        setUserCoords(location);
-      } catch (e) {
-        // Invalid saved location
-        localStorage.removeItem('userLocation');
-      }
-    }
-  }, []);
-
-  const fetchEvents = async (query?: string, lat?: number, lon?: number) => {
+  const fetchEvents = async (query?: string) => {
     setLoading(true);
     try {
       const params: { search?: string; latitude?: number; longitude?: number } = {};
@@ -87,19 +91,27 @@ const EventsPage = () => {
         params.search = query;
       }
       
-      // Use provided coordinates or saved coordinates
-      const useLat = lat ?? userCoords?.latitude;
-      const useLon = lon ?? userCoords?.longitude;
-      
-      if (useLat && useLon) {
-        params.latitude = useLat;
-        params.longitude = useLon;
+      // Always use current userCoords state if available
+      if (userCoords?.latitude && userCoords?.longitude) {
+        params.latitude = userCoords.latitude;
+        params.longitude = userCoords.longitude;
+        console.log('✅ Fetching events WITH user coordinates:', params);
+      } else {
+        console.log('⚠️ Fetching events WITHOUT user coordinates. userCoords:', userCoords);
       }
       
       const response = await eventsApi.getAll(Object.keys(params).length > 0 ? params : undefined);
+      console.log('📦 Received events:', response.data);
+      if (response.data && response.data.length > 0) {
+        console.log('📊 Sample event:', {
+          title: response.data[0].title,
+          distance: response.data[0].distance,
+          hasCoordinates: !!(response.data[0].latitude && response.data[0].longitude)
+        });
+      }
       setEvents(response.data);
     } catch (error) {
-      console.error("Error fetching events:", error);
+      console.error("❌ Error fetching events:", error);
       toast({
         variant: "destructive",
         title: "Error",
@@ -110,6 +122,7 @@ const EventsPage = () => {
     }
   };
 
+  // Fetch events when search query or user coordinates change
   useEffect(() => {
     fetchEvents(searchQuery);
     // eslint-disable-next-line react-hooks/exhaustive-deps
