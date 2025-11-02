@@ -87,7 +87,7 @@ const Navbar = ({ onSearch }: NavbarProps) => {
                 onClick={() => navigate("/events")}
                 className="hidden sm:inline-flex"
               >
-                Explore
+                Explore Events
               </Button>
             )}
             <Button
