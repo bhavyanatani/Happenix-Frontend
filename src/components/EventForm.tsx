@@ -16,6 +16,7 @@ export interface EventFormData {
   location: string;
   date: string;
   maxParticipants: number;
+  currentParticipants: number;
 }
 
 const EventForm = ({ onSubmit, isLoading = false }: EventFormProps) => {
@@ -25,6 +26,7 @@ const EventForm = ({ onSubmit, isLoading = false }: EventFormProps) => {
     location: "",
     date: "",
     maxParticipants: 10,
+    currentParticipants: 0,
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -39,6 +41,7 @@ const EventForm = ({ onSubmit, isLoading = false }: EventFormProps) => {
     setFormData((prev) => ({
       ...prev,
       [name]: name === "maxParticipants" ? parseInt(value) || 0 : value,
+      [name]: name === "currentParticipants" ? parseInt(value) || 0 : value,
     }));
   };
 
@@ -107,6 +110,19 @@ const EventForm = ({ onSubmit, isLoading = false }: EventFormProps) => {
               type="number"
               min="1"
               value={formData.maxParticipants}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="currentParticipants">Current Participants *</Label>
+            <Input
+              id="currentParticipants"
+              name="currentParticipants"
+              type="number"
+              min="0"
+              value={formData.currentParticipants}
               onChange={handleChange}
               required
             />
