@@ -13,9 +13,10 @@ Happenix is a real-time event discovery web app that helps users find events hap
 - 📱 Fully responsive and minimal UI  
 
 ## 🛠️ Tech Stack
-- **Frontend:** Next.js, React, Axios, Tailwind CSS  
-- **API Integration:** Nominatim (OpenStreetMap)  
+- **Frontend:** React, Axios, Tailwind CSS  
+- **API Integration:** Nominatim
 - **Backend:** Express.js + Node.js (Render hosted)  
+- **Database:** MongoDB 
 
 ## ⚙️ Setup Instructions
 1️⃣ Clone the repository  
