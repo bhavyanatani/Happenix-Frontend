@@ -1,73 +1,42 @@
-# Welcome to your Lovable project
+# 🌍 Happenix – Frontend
+**Live Site:** [https://event-sphere.vercel.app](https://happenix-frontend.vercel.app)  
+**Backend Repo:** [https://github.com/bhavyanatani/Happenix-Backend](https://github.com/bhavyanatani/Happenix-Backend)
 
-## Project info
+## 🧩 Overview
+Happenix is a real-time event discovery web app that helps users find events happening around their location. Built with **Next.js**, it integrates the **Nominatim API** for geocoding and uses browser **Geolocation API** for personalized results.
 
-**URL**: https://lovable.dev/projects/22620424-df21-441e-9c53-f64ea2574238
+## 🚀 Features
+- 🌐 Location-based event search using Nominatim API  
+- 📍 Automatic geolocation detection  
+- 🔍 Dynamic filtering by distance, category, and date  
+- ⚡ Optimized API handling for smooth performance  
+- 📱 Fully responsive and minimal UI  
 
-## How can I edit this code?
+## 🛠️ Tech Stack
+- **Frontend:** Next.js, React, Axios, Tailwind CSS  
+- **API Integration:** Nominatim (OpenStreetMap)  
+- **Backend:** Express.js + Node.js (Render hosted)  
 
-There are several ways of editing your application.
+## ⚙️ Setup Instructions
+1️⃣ Clone the repository  
+git clone https://github.com/bhavyanatani/event-sphere-frontend.git  
+cd event-sphere-frontend  
 
-**Use Lovable**
+2️⃣ Install dependencies  
+npm install  
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/22620424-df21-441e-9c53-f64ea2574238) and start prompting.
+3️⃣ Add environment variables  
+Create a file named `.env.local` and add:  
+NEXT_PUBLIC_BACKEND_URL=<your_backend_url_here> 
 
-Changes made via Lovable will be committed automatically to this repo.
+4️⃣ Run the development server  
+npm run dev  
 
-**Use your preferred IDE**
+The app will be live at **http://localhost:3000**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+## ⚠️ Note
+Backend is hosted on Render’s free tier, so the first request may take a few seconds to respond.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+## 🧑‍💻 Author
+**Bhavya Natani**  
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/22620424-df21-441e-9c53-f64ea2574238) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
